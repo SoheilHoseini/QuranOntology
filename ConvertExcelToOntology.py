@@ -91,7 +91,22 @@ def AddSubclasses(fatherClass, subclass , fileName):
     middleTxt2 = '\n        <Class IRI="#' + ModifyEntityNameForOnto(fatherClass) + '"/>'
     fileName.write(middleTxt2)
     fileName.write("\n    </SubClassOf>")
-  
+ 
+# Take a class name and its individuals and add it to the ontology
+def AddIndividualsToOntology(className, individualName, fileName): 
+    
+    fileName.write("\n    <Declaration>\n")
+    middleTxt = '        <NamedIndividual IRI="#' + ModifyEntityNameForOnto(individualName) + '"/>'
+    fileName.write(middleTxt)
+    fileName.write("\n    </Declaration>")
+    
+    fileName.write("\n    <ClassAssertion>\n")
+    middleTxt2 = '        <Class IRI="#' + ModifyEntityNameForOnto(className) + '"/>'
+    fileName.write(middleTxt2)
+    middleTxt3 = '\n        <NamedIndividual IRI="#' + ModifyEntityNameForOnto(individualName) + '"/>'
+    fileName.write(middleTxt3)
+    fileName.write("\n    </ClassAssertion>")
+    
 # Adds the initializing tags, needed for building an ontology
 def InitializeOntology(ontoFile, ontologyName, annotation):
     
@@ -122,7 +137,7 @@ def FinalizeOntology(file):
     
     
 # Take ontology name and annotation from user
-ontologyName = input("Enter the name of your ontology: \n")
+ontologyName = input("Enter the name of your ontology: \n") # There shouldn't be any spaces in the ontology name
 annotation = input("Enter a brief annotation for your ontology: \n")
 
 
@@ -164,7 +179,7 @@ for i in range(2, objPropList.max_row+1):
 ontologySubclasses = openpyxl.load_workbook("ClassAndSubClass.xlsx")
 subclassList = ontologySubclasses.active
 
-# Iterate file of subclasses and and declare each subclasses as a class in the ontology
+# Iterate file of subclasses and declare each subclasses as a class in the ontology
 for i in range(2, subclassList.max_row+1):
     
     fatherClassName  = subclassList.cell(row=i, column=1).value
@@ -192,6 +207,20 @@ for i in range(2, subclassList.max_row+1):
     
     
     AddSubclasses(fatherClassName, subclassName, newOntology)
+
+# Load Individuals
+ontologyIndv = openpyxl.load_workbook("Individuals.xlsx")
+indvList = ontologyIndv.active
+
+# Iterate file of individuals and add them to the ontology
+for i in range(2, indvList.max_row+1):
+    classNameForIndv = indvList.cell(row=i, column=1).value
+    indvName = indvList.cell(row=i, column=2).value
+    
+    if(type(indvName) == NoneType):
+        continue
+    
+    AddIndividualsToOntology(classNameForIndv, indvName, newOntology)
 
 # Add final tags to the ontology file
 FinalizeOntology(newOntology)
