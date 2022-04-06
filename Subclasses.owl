@@ -1,0 +1,204 @@
+<?xml version="1.0"?>
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.sem0anticweb.org/rayan-tech/ontologies/2022/2/Subclasses"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     ontologyIRI="http://www.sem0anticweb.org/rayan-tech/ontologies/2022/2/Subclasses">
+     <Prefix name="" IRI="http://www.sem0anticweb.org/rayan-tech/ontologies/2022/2/Subclasses"/>
+     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+     <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+     <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
+     <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+     <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+     <Annotation>
+         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+         <Literal>This test is for subclasses</Literal>
+     </Annotation>
+    <Declaration>
+        <Class IRI="#فواتح_خبری"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#فواتح_سور"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قاعده_عمومیت_لفظ_یا_خصوص_سبب"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قانون_ترجیح_در_رای"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قرّای_اربعه_عشر"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قرّای_اهل_تالیف"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قراء_تابعین_کوفی"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قرائات_اربعه_عشر"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قرائات_و_قراء"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قرائت_ابن_عامر_یحصبی"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قرائت_بادیه‌نشینان"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قرائت_به_روایت"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قرائت_سماعی"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#قرائت_صحابه"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#فانکشنال_دارد_با"/>
+    </Declaration>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#فانکشنال_دارد_با"/>
+    </FunctionalObjectProperty>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#فانکشنال_دارد_با"/>
+        <Class IRI="#فواتح_خبری"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#فانکشنال_دارد_با"/>
+        <Class IRI="#قرائات_اربعه_عشر"/>
+    </ObjectPropertyRange>
+    <Declaration>
+        <ObjectProperty IRI="#فانکشنال_معکوس_دارد_با"/>
+    </Declaration>
+    <InverseFunctionalObjectProperty>
+        <ObjectProperty IRI="#فانکشنال_معکوس_دارد_با"/>
+    </InverseFunctionalObjectProperty>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#فانکشنال_معکوس_دارد_با"/>
+        <Class IRI="#فواتح_سور"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#فانکشنال_معکوس_دارد_با"/>
+        <Class IRI="#قرائات_و_قراء"/>
+    </ObjectPropertyRange>
+    <Declaration>
+        <ObjectProperty IRI="#تقارنی_دارد_با"/>
+    </Declaration>
+    <SymmetricObjectProperty>
+        <ObjectProperty IRI="#تقارنی_دارد_با"/>
+    </SymmetricObjectProperty>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#تقارنی_دارد_با"/>
+        <Class IRI="#قانون_ترجیح_در_رای"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#تقارنی_دارد_با"/>
+        <Class IRI="#قرائت_ابن_عامر_یحصبی"/>
+    </ObjectPropertyRange>
+    <Declaration>
+        <ObjectProperty IRI="#غیرتقارنی_دارد_با"/>
+    </Declaration>
+    <AsymmetricObjectProperty>
+        <ObjectProperty IRI="#غیرتقارنی_دارد_با"/>
+    </AsymmetricObjectProperty>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#غیرتقارنی_دارد_با"/>
+        <Class IRI="#قاعده_عمومیت_لفظ_یا_خصوص_سبب"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#غیرتقارنی_دارد_با"/>
+        <Class IRI="#قرائت_بادیه‌نشینان"/>
+    </ObjectPropertyRange>
+    <Declaration>
+        <ObjectProperty IRI="#تعدی_دارد_با"/>
+    </Declaration>
+    <TransitiveObjectProperty>
+        <ObjectProperty IRI="#تعدی_دارد_با"/>
+    </TransitiveObjectProperty>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#تعدی_دارد_با"/>
+        <Class IRI="#قرّای_اربعه_عشر"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#تعدی_دارد_با"/>
+        <Class IRI="#قرائت_به_روایت"/>
+    </ObjectPropertyRange>
+    <Declaration>
+        <ObjectProperty IRI="#بازتابی_دارد_با"/>
+    </Declaration>
+    <ReflexiveObjectProperty>
+        <ObjectProperty IRI="#بازتابی_دارد_با"/>
+    </ReflexiveObjectProperty>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#بازتابی_دارد_با"/>
+        <Class IRI="#قرّای_اهل_تالیف"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#بازتابی_دارد_با"/>
+        <Class IRI="#قرائت_سماعی"/>
+    </ObjectPropertyRange>
+    <Declaration>
+        <ObjectProperty IRI="#غیر_بازتابی_دارد_با"/>
+    </Declaration>
+    <IrreflexiveObjectProperty>
+        <ObjectProperty IRI="#غیر_بازتابی_دارد_با"/>
+    </IrreflexiveObjectProperty>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#غیر_بازتابی_دارد_با"/>
+        <Class IRI="#قراء_تابعین_کوفی"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#غیر_بازتابی_دارد_با"/>
+        <Class IRI="#قرائت_صحابه"/>
+    </ObjectPropertyRange>
+    <Declaration>
+        <Class IRI="#بچه_فواتح"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#بچه_رای"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#بچه_کوفی"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#بچه_عامر"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#نوه_فواتح"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#نوه_عامر"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#بچه_فواتح"/>
+        <Class IRI="#فواتح_خبری"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#بچه_رای"/>
+        <Class IRI="#قانون_ترجیح_در_رای"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#بچه_کوفی"/>
+        <Class IRI="#قراء_تابعین_کوفی"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#بچه_عامر"/>
+        <Class IRI="#قرائت_ابن_عامر_یحصبی"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#نوه_فواتح"/>
+        <Class IRI="#بچه_فواتح"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#نوه_عامر"/>
+        <Class IRI="#بچه_عامر"/>
+    </SubClassOf>
+</Ontology>
+
+
+<!--Contributed by Soheil Hoseini-->
