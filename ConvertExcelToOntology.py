@@ -199,14 +199,24 @@ for i in range(2, subclassList.max_row+1):
 # Create connection between father class and its subclasses
 for i in range(2, subclassList.max_row+1):
     
-    fatherClassName  = subclassList.cell(row=i, column=1).value
-    subclassName = subclassList.cell(row=i, column=2).value
+    #fatherClassName  = subclassList.cell(row=i, column=1).value
+    #subclassName = subclassList.cell(row=i, column=2).value
     
-    if (type(subclassName) == NoneType):
-        continue
+    for j in range(2, 16):
+        
+        fatherClassName  = subclassList.cell(row=i, column=j-1).value
+        subclassName = subclassList.cell(row=i, column=j).value
+        
+        if (type(subclassName) == NoneType):
+            continue
+        
+        AddSubclasses(fatherClassName, subclassName, newOntology)
+        
+    # if (type(subclassName) == NoneType):
+    #     continue
     
     
-    AddSubclasses(fatherClassName, subclassName, newOntology)
+    #AddSubclasses(fatherClassName, subclassName, newOntology)
 
 # Load Individuals
 ontologyIndv = openpyxl.load_workbook("Individuals.xlsx")
