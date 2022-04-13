@@ -176,7 +176,7 @@ for i in range(2, objPropList.max_row+1):
     AddObjectPropToOntology(relationName, domainClass, rangeClass, newOntology, objectPropertyType)
 
 # Load classes and subclasses excel
-ontologySubclasses = openpyxl.load_workbook("ClassAndSubClass.xlsx")
+ontologySubclasses = openpyxl.load_workbook("ParentChildList.xlsx")
 subclassList = ontologySubclasses.active
 
 # Iterate file of subclasses and declare each subclasses as a class in the ontology
