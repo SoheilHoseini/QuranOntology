@@ -199,25 +199,54 @@ for i in range(2, subclassList.max_row+1):
 # Create connection between father class and its subclasses
 for i in range(2, subclassList.max_row+1):
     
-    #fatherClassName  = subclassList.cell(row=i, column=1).value
-    #subclassName = subclassList.cell(row=i, column=2).value
+    fatherClassName  = subclassList.cell(row=i, column=1).value
+    subclassName = subclassList.cell(row=i, column=2).value
     
-    for j in range(2, 16):
+    # for j in range(2, 16):
         
-        fatherClassName  = subclassList.cell(row=i, column=j-1).value
-        subclassName = subclassList.cell(row=i, column=j).value
+    #     fatherClassName  = subclassList.cell(row=i, column=j-1).value
+    #     subclassName = subclassList.cell(row=i, column=j).value
         
-        if (type(subclassName) == NoneType):
-            continue
+    if (type(subclassName) == NoneType):
+        continue
         
-        AddSubclasses(fatherClassName, subclassName, newOntology)
+    AddSubclasses(fatherClassName, subclassName, newOntology)
         
-    # if (type(subclassName) == NoneType):
-    #     continue
-    
-    
-    #AddSubclasses(fatherClassName, subclassName, newOntology)
 
+ontologySubclasses2 = openpyxl.load_workbook("HierarchyOfQuranConcepts.xlsx")
+subclassList2 = ontologySubclasses2.active
+       
+for i in range(2, subclassList2.max_row+1):
+    
+    #second file of classes
+    fatherClassName2  = subclassList2.cell(row=i, column=1).value
+    subclassName2 = subclassList2.cell(row=i, column=2).value
+    
+    if (fatherClassName2 not in allClassesList):
+        AddClassToOntology(fatherClassName2 , newOntology)
+        allClassesList.append(fatherClassName2)
+    
+    if (type(subclassName2) == NoneType):
+        continue 
+     
+    if (subclassName2 not in allClassesList):
+        AddClassToOntology(subclassName2, newOntology)
+        allClassesList.append(subclassName2)
+        
+        
+
+# Create connection between father class and its subclasses for the second list
+for i in range(2, subclassList2.max_row+1):
+    
+    fatherClassName2  = subclassList2.cell(row=i, column=1).value
+    subclassName2 = subclassList2.cell(row=i, column=2).value
+    
+    if (type(subclassName2) == NoneType):
+            continue
+    AddSubclasses(fatherClassName2, subclassName2, newOntology)
+        
+        
+        
 # Load Individuals
 ontologyIndv = openpyxl.load_workbook("Individuals.xlsx")
 indvList = ontologyIndv.active
