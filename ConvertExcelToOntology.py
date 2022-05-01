@@ -13,6 +13,35 @@ import os # Used for converting the txt file to owl file
 # Converts the Persian class names to .owl format
 def ModifyEntityNameForOnto(className):
     nameList = list(className.split())
+    
+    #Remove paranthesis
+    for i in range(len(nameList)):
+        if nameList[i] == "(" or nameList[i] == ")":
+            print(className)
+            nameList[i] = "" 
+            
+        tmp = nameList[i]
+        ans = ""
+        
+        for j in range(len(tmp)):
+            
+            if tmp[j] == "(" and tmp[j + 1] == "ع":
+                ans += "_"
+                continue
+            
+            if tmp[j] == "(" and tmp[j + 1] == "ص":
+                ans += "_"
+                continue
+            
+            if tmp[j] == "(" and tmp[j + 1] == "س":
+                ans += "_"
+                continue
+            
+            if tmp[j] != "(" and tmp[j] != ")":
+                ans += tmp[j] 
+                 
+        nameList[i] = ans    
+            
     return "_".join(nameList)
 
 # Takes a class name and adds it the ontology
@@ -151,33 +180,28 @@ newOntology.close()
 # Open the txt file again to append class names
 newOntology = open(ontologyName + ".txt", 'a', encoding="utf8")
 
+allClassesList = []
+
+'''
 # Load class names excel with its path
 ontologyClasses = openpyxl.load_workbook("SmallQuranWords - Test.xlsx")
 classNamesList = ontologyClasses.active
 
-allClassesList = []
+
 
 # Iterate through excel file of classes and add classes to ontology
 for i in range(2, classNamesList.max_row+1):
     className = classNamesList.cell(row=i, column=1).value
     allClassesList.append(className)
     AddClassToOntology(className, newOntology)
+'''
 
-# Load object properties excel with its path
-ontologyObjProp = openpyxl.load_workbook("QuranObjectProperties.xlsx")
-objPropList = ontologyObjProp.active
 
-# Iterate through excel file of relations and add classes to ontology
-for i in range(2, objPropList.max_row+1):
-    domainClass = objPropList.cell(row=i, column=1).value
-    rangeClass = objPropList.cell(row=i, column=2).value
-    relationName = objPropList.cell(row=i, column=3).value
-    objectPropertyType = objPropList.cell(row=i, column=4).value
-    AddObjectPropToOntology(relationName, domainClass, rangeClass, newOntology, objectPropertyType)
 
 # Load classes and subclasses excel
 ontologySubclasses = openpyxl.load_workbook("ParentChildList.xlsx")
 subclassList = ontologySubclasses.active
+
 
 # Iterate file of subclasses and declare each subclasses as a class in the ontology
 for i in range(2, subclassList.max_row+1):
@@ -195,6 +219,7 @@ for i in range(2, subclassList.max_row+1):
     if (subclassName not in allClassesList):
         AddClassToOntology(subclassName, newOntology)
         allClassesList.append(subclassName)
+    
 
 # Create connection between father class and its subclasses
 for i in range(2, subclassList.max_row+1):
@@ -202,16 +227,11 @@ for i in range(2, subclassList.max_row+1):
     fatherClassName  = subclassList.cell(row=i, column=1).value
     subclassName = subclassList.cell(row=i, column=2).value
     
-    # for j in range(2, 16):
-        
-    #     fatherClassName  = subclassList.cell(row=i, column=j-1).value
-    #     subclassName = subclassList.cell(row=i, column=j).value
-        
     if (type(subclassName) == NoneType):
         continue
         
     AddSubclasses(fatherClassName, subclassName, newOntology)
-        
+       
 
 ontologySubclasses2 = openpyxl.load_workbook("HierarchyOfQuranConcepts.xlsx")
 subclassList2 = ontologySubclasses2.active
@@ -233,7 +253,6 @@ for i in range(2, subclassList2.max_row+1):
         AddClassToOntology(subclassName2, newOntology)
         allClassesList.append(subclassName2)
         
-        
 
 # Create connection between father class and its subclasses for the second list
 for i in range(2, subclassList2.max_row+1):
@@ -243,10 +262,27 @@ for i in range(2, subclassList2.max_row+1):
     
     if (type(subclassName2) == NoneType):
             continue
+        
     AddSubclasses(fatherClassName2, subclassName2, newOntology)
-        
-        
-        
+
+
+
+'''
+# Load object properties excel with its path
+ontologyObjProp = openpyxl.load_workbook("QuranObjectProperties.xlsx")
+objPropList = ontologyObjProp.active
+
+# Iterate through excel file of relations and add classes to ontology
+for i in range(2, objPropList.max_row+1):
+    domainClass = objPropList.cell(row=i, column=1).value
+    rangeClass = objPropList.cell(row=i, column=2).value
+    relationName = objPropList.cell(row=i, column=3).value
+    objectPropertyType = objPropList.cell(row=i, column=4).value
+    AddObjectPropToOntology(relationName, domainClass, rangeClass, newOntology, objectPropertyType)
+'''  
+
+
+'''  
 # Load Individuals
 ontologyIndv = openpyxl.load_workbook("Individuals.xlsx")
 indvList = ontologyIndv.active
@@ -260,6 +296,7 @@ for i in range(2, indvList.max_row+1):
         continue
     
     AddIndividualsToOntology(classNameForIndv, indvName, newOntology)
+'''
 
 # Add final tags to the ontology file
 FinalizeOntology(newOntology)
