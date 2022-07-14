@@ -309,3 +309,4 @@ base = os.path.splitext(convertedFile)[0]
 os.rename(convertedFile, base + '.owl')
 
 print('Congratulations! You have successfully built your new ontology.')
+
