@@ -44,12 +44,14 @@ def ModifyEntityNameForOnto(className):
             
     return "_".join(nameList)
 
+
 # Takes a class name and adds it the ontology
 def AddClassToOntology(className, fileName):
     fileName.write("\n    <Declaration>\n")
     middleTxt = '        <Class IRI="#' + ModifyEntityNameForOnto(className) + '"/>'
     fileName.write(middleTxt)
     fileName.write("\n    </Declaration>")
+
 
 # Takes a relation name and adds it the ontology
 def AddObjectPropToOntology(relationName, domainClass, rangeClass, fileName, objectPropertyType):
@@ -95,6 +97,7 @@ def AddObjectPropToOntology(relationName, domainClass, rangeClass, fileName, obj
     
     fileName.write("\n    </ObjectPropertyRange>")
     
+    
 # Takes a object property type and returns the corresponding string of it
 def ObjectPropertyTypeString(objectProType):
     
@@ -107,10 +110,18 @@ def ObjectPropertyTypeString(objectProType):
         "asymmetric" : "AsymmetricObjectProperty",
         "transitive" : "TransitiveObjectProperty",
         "reflexive" : "ReflexiveObjectProperty",
-        "irreflexive" : "IrreflexiveObjectProperty"
+        "irreflexive" : "IrreflexiveObjectProperty",
+        "Functional" : "FunctionalObjectProperty",
+        "Inverse Functional" : "InverseFunctionalObjectProperty",
+        "Symmetric" : "SymmetricObjectProperty",
+        "Asymmetric" : "AsymmetricObjectProperty",
+        "Transitive" : "TransitiveObjectProperty",
+        "Reflexive" : "ReflexiveObjectProperty",
+        "Irreflexive" : "IrreflexiveObjectProperty"
     }
     
     return switcher.get(objectProType)
+
 
 # Take a class name and its father and add it to the ontology
 def AddSubclasses(fatherClass, subclass , fileName):
@@ -120,6 +131,7 @@ def AddSubclasses(fatherClass, subclass , fileName):
     middleTxt2 = '\n        <Class IRI="#' + ModifyEntityNameForOnto(fatherClass) + '"/>'
     fileName.write(middleTxt2)
     fileName.write("\n    </SubClassOf>")
+ 
  
 # Take a class name and its individuals and add it to the ontology
 def AddIndividualsToOntology(className, individualName, fileName): 
@@ -135,7 +147,8 @@ def AddIndividualsToOntology(className, individualName, fileName):
     middleTxt3 = '\n        <NamedIndividual IRI="#' + ModifyEntityNameForOnto(individualName) + '"/>'
     fileName.write(middleTxt3)
     fileName.write("\n    </ClassAssertion>")
-    
+
+
 # Adds the initializing tags, needed for building an ontology
 def InitializeOntology(ontoFile, ontologyName, annotation):
     
@@ -158,6 +171,7 @@ def InitializeOntology(ontoFile, ontologyName, annotation):
     ontoFile.write('         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>\n')
     ontoFile.write('         <Literal>' + annotation + '</Literal>\n')
     ontoFile.write('     </Annotation>')
+    
     
 # Adds final tags for creating the ontology
 def FinalizeOntology(file):
