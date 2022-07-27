@@ -99,6 +99,7 @@ relations = openpyxl.load_workbook("xlsx files\\" + rels_file_name + ".xlsx")
 relations_list = relations.active
 
 differences = list()
+common_entities = list()
 
 for i in range(2, relations_list.max_row + 1):
     domain = relations_list.cell(row = i, column = 1).value
@@ -107,21 +108,41 @@ for i in range(2, relations_list.max_row + 1):
     if domain not in all_entities:
         differences.append({domain:i})
     
+    else:
+        common_entities.append({domain:i})
+    
     if range_class not in all_entities:
         differences.append({range_class:i})
+        
+    else:
+        common_entities.append({range_class:i})
+        
 
 print(len(differences))        
 print(differences)
 
 
-# Add different records to a new excel file
-workbook3 = xlsxwriter.Workbook("xlsx files\\" + "DifferentRecords.xlsx")
-worksheet3 = workbook3.add_worksheet()
+# # Add different records to a new excel file
+# workbook3 = xlsxwriter.Workbook("xlsx files\\" + "DifferentRecords.xlsx")
+# worksheet3 = workbook3.add_worksheet()
+# row = 1 
+# for j in range(len(differences)):
+#     for key , value in differences[j].items():
+#         worksheet3.write(row, 0, key)
+#         worksheet3.write(row, 1, value)
+#     row += 1 
+    
+# workbook3.close()
+
+
+# Add common records to a new excel file
+workbook4 = xlsxwriter.Workbook("xlsx files\\" + "CommonRelsAndHierarchy.xlsx")
+worksheet4 = workbook4.add_worksheet()
 row = 1 
-for j in range(len(differences)):
-    for key , value in differences[j].items():
-        worksheet3.write(row, 0, key)
-        worksheet3.write(row, 1, value)
+for j in range(len(common_entities)):
+    for key , value in common_entities[j].items():
+        worksheet4.write(row, 0, key)
+        worksheet4.write(row, 1, value)
     row += 1 
     
-workbook3.close()
+workbook4.close()
