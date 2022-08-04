@@ -185,14 +185,14 @@ annotation = input("Enter a brief annotation for your ontology: \n")
 
 
 # Create a txt file for the ontology to write initializing owl tags to it
-newOntology = open(ontologyName + ".txt", 'w', encoding="utf8")
+newOntology = open("txt files\\" + ontologyName + ".txt", 'w', encoding="utf8")
 
 # Initialize the Ontology
 InitializeOntology(newOntology, ontologyName, annotation)
 newOntology.close()
 
 # Open the txt file again to append class names
-newOntology = open(ontologyName + ".txt", 'a', encoding="utf8")
+newOntology = open("txt files\\" + ontologyName + ".txt", 'a', encoding="utf8")
 
 allClassesList = []
 
@@ -213,8 +213,9 @@ for i in range(2, classNamesList.max_row+1):
 
 
 # Load classes and subclasses excel
-ontologySubclasses = openpyxl.load_workbook("ParentChildList.xlsx")
-subclassList = ontologySubclasses.active
+hirarchyOntoExcelName = "outOlumQuranHierarchy"
+ontologySubclasses = openpyxl.load_workbook("xlsx files\\HierarchyOntology\\" + hirarchyOntoExcelName + ".xlsx")
+subclassList = ontologySubclasses.active 
 
 
 # Iterate file of subclasses and declare each subclasses as a class in the ontology
@@ -222,6 +223,7 @@ for i in range(2, subclassList.max_row+1):
     
     fatherClassName  = subclassList.cell(row=i, column=1).value
     subclassName = subclassList.cell(row=i, column=2).value
+    superClassName = subclassList.cell(row=i, column=3).value
     
     if (fatherClassName not in allClassesList):
         AddClassToOntology(fatherClassName , newOntology)
@@ -234,19 +236,25 @@ for i in range(2, subclassList.max_row+1):
         AddClassToOntology(subclassName, newOntology)
         allClassesList.append(subclassName)
     
+    if(superClassName not in allClassesList):
+        AddClassToOntology(superClassName, newOntology)
+        allClassesList.append(superClassName)
+        
 
 # Create connection between father class and its subclasses
 for i in range(2, subclassList.max_row+1):
     
     fatherClassName  = subclassList.cell(row=i, column=1).value
     subclassName = subclassList.cell(row=i, column=2).value
+    superClassName = subclassList.cell(row=i, column=3).value
     
     if (type(subclassName) == NoneType):
         continue
         
     AddSubclasses(fatherClassName, subclassName, newOntology)
+    AddSubclasses(superClassName, fatherClassName, newOntology)
        
-
+'''
 ontologySubclasses2 = openpyxl.load_workbook("HierarchyOfQuranConcepts.xlsx")
 subclassList2 = ontologySubclasses2.active
        
@@ -278,7 +286,7 @@ for i in range(2, subclassList2.max_row+1):
             continue
         
     AddSubclasses(fatherClassName2, subclassName2, newOntology)
-
+'''
 
 
 '''
@@ -314,12 +322,12 @@ for i in range(2, indvList.max_row+1):
 
 # Add final tags to the ontology file
 FinalizeOntology(newOntology)
-
 newOntology.close()
 
 # Convert the txt file to owl file
-convertedFile = ontologyName + ".txt"
+convertedFile = "txt files\\" + ontologyName + ".txt"
 base = os.path.splitext(convertedFile)[0]
+base = "owl" + base[3:] # Save the ontology in the "owl files" folder
 os.rename(convertedFile, base + '.owl')
 
 print('Congratulations! You have successfully built your new ontology.')
