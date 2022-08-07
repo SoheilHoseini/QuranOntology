@@ -213,18 +213,17 @@ for i in range(2, classNamesList.max_row+1):
 
 
 # Load classes and subclasses excel
-hirarchyOntoExcelName = "outOlumQuranHierarchy"
-ontologySubclasses = openpyxl.load_workbook("xlsx files\\HierarchyOntology\\" + hirarchyOntoExcelName + ".xlsx")
+hirarchyOntoExcelName = "Classes"
+ontologySubclasses = openpyxl.load_workbook("xlsx files\\IndividualOntology\\" + hirarchyOntoExcelName + ".xlsx")
 subclassList = ontologySubclasses.active 
 
 
 # Iterate file of subclasses and declare each subclasses as a class in the ontology
 for i in range(2, subclassList.max_row+1):
     
-    fatherClassName  = subclassList.cell(row=i, column=1).value
-    subclassName = subclassList.cell(row=i, column=2).value
-    superClassName = subclassList.cell(row=i, column=3).value
-    
+    fatherClassName  = subclassList.cell(row=i, column=2).value
+    subclassName = subclassList.cell(row=i, column=1).value
+
     if (fatherClassName not in allClassesList):
         AddClassToOntology(fatherClassName , newOntology)
         allClassesList.append(fatherClassName)
@@ -235,24 +234,19 @@ for i in range(2, subclassList.max_row+1):
     if (subclassName not in allClassesList):
         AddClassToOntology(subclassName, newOntology)
         allClassesList.append(subclassName)
-    
-    if(superClassName not in allClassesList):
-        AddClassToOntology(superClassName, newOntology)
-        allClassesList.append(superClassName)
+
         
 
 # Create connection between father class and its subclasses
 for i in range(2, subclassList.max_row+1):
     
-    fatherClassName  = subclassList.cell(row=i, column=1).value
-    subclassName = subclassList.cell(row=i, column=2).value
-    superClassName = subclassList.cell(row=i, column=3).value
+    fatherClassName  = subclassList.cell(row=i, column=2).value
+    subclassName = subclassList.cell(row=i, column=1).value
     
     if (type(subclassName) == NoneType):
         continue
         
     AddSubclasses(fatherClassName, subclassName, newOntology)
-    AddSubclasses(superClassName, fatherClassName, newOntology)
        
 '''
 ontologySubclasses2 = openpyxl.load_workbook("HierarchyOfQuranConcepts.xlsx")
@@ -304,21 +298,39 @@ for i in range(2, objPropList.max_row+1):
 '''  
 
 
-'''  
+
 # Load Individuals
-ontologyIndv = openpyxl.load_workbook("Individuals.xlsx")
+concept_indv_excel_name = "QuranConceptIndv"
+ontologyIndv = openpyxl.load_workbook("xlsx files\\IndividualOntology\\" + concept_indv_excel_name + ".xlsx")
 indvList = ontologyIndv.active
 
 # Iterate file of individuals and add them to the ontology
 for i in range(2, indvList.max_row+1):
-    classNameForIndv = indvList.cell(row=i, column=1).value
-    indvName = indvList.cell(row=i, column=2).value
+    classNameForIndv = indvList.cell(row=i, column=2).value
+    indvName = indvList.cell(row=i, column=1).value
     
     if(type(indvName) == NoneType):
         continue
     
     AddIndividualsToOntology(classNameForIndv, indvName, newOntology)
-'''
+
+
+# Load Individuals
+science_indv_excel_name = "QuranScienceIndv"
+ontologyIndv = openpyxl.load_workbook("xlsx files\\IndividualOntology\\" + science_indv_excel_name + ".xlsx")
+indvList = ontologyIndv.active
+
+# Iterate file of individuals and add them to the ontology
+for i in range(2, indvList.max_row+1):
+    classNameForIndv = indvList.cell(row=i, column=2).value
+    indvName = indvList.cell(row=i, column=1).value
+    
+    if(type(indvName) == NoneType):
+        continue
+    
+    AddIndividualsToOntology(classNameForIndv, indvName, newOntology)
+
+
 
 # Add final tags to the ontology file
 FinalizeOntology(newOntology)
