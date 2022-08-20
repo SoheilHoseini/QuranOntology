@@ -1,14 +1,12 @@
 # Code for building an ontology with class names in an excel file.
-# Contributed by Soheil Hoseini
+# Contributed by Soheil Hoseini - CE student at IUST - Iran, Tehran
 
 
 from tkinter.filedialog import Open
 from types import NoneType
-from sympy import N
+from sympy import N, Domain
 import openpyxl # Reading an excel file using Python
 import os # Used for converting the txt file to owl file
-
-
 
 # Converts the Persian class names to .owl format
 def ModifyEntityNameForOnto(className):
@@ -47,6 +45,8 @@ def ModifyEntityNameForOnto(className):
 
 # Takes a class name and adds it the ontology
 def AddClassToOntology(className, fileName):
+    
+    # Class declaration
     fileName.write("\n    <Declaration>\n")
     middleTxt = '        <Class IRI="#' + ModifyEntityNameForOnto(className) + '"/>'
     fileName.write(middleTxt)
@@ -54,48 +54,48 @@ def AddClassToOntology(className, fileName):
 
 
 # Takes a relation name and adds it the ontology
-def AddObjectPropToOntology(relationName, domainClass, rangeClass, fileName, objectPropertyType):
+def AddClassObjPropToOntology(relation_name, domain_class, range_class, file_name, object_property_type):
     
     # Declaration of the relation
-    fileName.write("\n    <Declaration>\n")
-    middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relationName) + '"/>'
-    fileName.write(middleTxt)
-    fileName.write("\n    </Declaration>")
+    file_name.write("\n    <Declaration>\n")
+    middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relation_name) + '"/>'
+    file_name.write(middleTxt)
+    file_name.write("\n    </Declaration>")
     
     # Determine the type of the object property
-    if objectPropertyType != None:
-        objPropStr = ObjectPropertyTypeString(objectPropertyType)
+    if object_property_type != None:
+        objPropStr = ObjectPropertyTypeString(object_property_type)
         
         startText = "\n    <" + objPropStr + ">\n"
-        fileName.write(startText)
+        file_name.write(startText)
         
-        middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relationName) + '"/>'
-        fileName.write(middleTxt)
+        middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relation_name) + '"/>'
+        file_name.write(middleTxt)
         
         endingText = "\n    </" + objPropStr + ">"
-        fileName.write(endingText)
+        file_name.write(endingText)
     
     # Determine domains of the object properties
-    fileName.write("\n    <ObjectPropertyDomain>\n")
+    file_name.write("\n    <ObjectPropertyDomain>\n")
     
-    middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relationName) + '"/>'
-    fileName.write(middleTxt)
+    middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relation_name) + '"/>'
+    file_name.write(middleTxt)
     
-    middleTxt2 = '\n        <Class IRI="#' + ModifyEntityNameForOnto(domainClass) + '"/>'
-    fileName.write(middleTxt2)
+    middleTxt2 = '\n        <Class IRI="#' + ModifyEntityNameForOnto(domain_class) + '"/>'
+    file_name.write(middleTxt2)
     
-    fileName.write("\n    </ObjectPropertyDomain>")
+    file_name.write("\n    </ObjectPropertyDomain>")
     
     # Determine ranges of the object properties
-    fileName.write("\n    <ObjectPropertyRange>\n")
+    file_name.write("\n    <ObjectPropertyRange>\n")
     
-    middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relationName) + '"/>'
-    fileName.write(middleTxt)
+    middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relation_name) + '"/>'
+    file_name.write(middleTxt)
     
-    middleTxt2 = '\n        <Class IRI="#' + ModifyEntityNameForOnto(rangeClass) + '"/>'
-    fileName.write(middleTxt2)
+    middleTxt2 = '\n        <Class IRI="#' + ModifyEntityNameForOnto(range_class) + '"/>'
+    file_name.write(middleTxt2)
     
-    fileName.write("\n    </ObjectPropertyRange>")
+    file_name.write("\n    </ObjectPropertyRange>")
     
     
 # Takes a object property type and returns the corresponding string of it
@@ -136,11 +136,13 @@ def AddSubclasses(fatherClass, subclass , fileName):
 # Take a class name and its individuals and add it to the ontology
 def AddIndividualsToOntology(className, individualName, fileName): 
     
+    # Declaration of the individual
     fileName.write("\n    <Declaration>\n")
     middleTxt = '        <NamedIndividual IRI="#' + ModifyEntityNameForOnto(individualName) + '"/>'
     fileName.write(middleTxt)
     fileName.write("\n    </Declaration>")
     
+    # Cretae connection between individual and its referense class
     fileName.write("\n    <ClassAssertion>\n")
     middleTxt2 = '        <Class IRI="#' + ModifyEntityNameForOnto(className) + '"/>'
     fileName.write(middleTxt2)
@@ -178,109 +180,145 @@ def FinalizeOntology(file):
     file.write("\n</Ontology>")
     file.write('\n\n\n<!--' + 'Contributed by Soheil Hoseini' + '-->')
     
+
+# Take a list of classes and subclasses and creates a hierarchy ontology
+def CreateHierarchicalOntologyProcess(hirarchy_onto_excelName, ontology_file, father_column, subclass_column, excel_rel_path):
     
+    allClassesList = []
+    
+    # Load classes and subclasses excel
+    ontologySubclasses = openpyxl.load_workbook(excel_rel_path + hirarchy_onto_excelName + ".xlsx")
+    subclassList = ontologySubclasses.active 
+
+
+    # Iterate file of subclasses and declare each subclasses as a class in the ontology
+    for i in range(2, subclassList.max_row + 1):
+        
+        fatherClassName  = subclassList.cell(row = i, column = father_column).value
+        subclassName = subclassList.cell(row = i, column = subclass_column).value
+
+        if (fatherClassName not in allClassesList):
+            AddClassToOntology(fatherClassName , ontology_file)
+            allClassesList.append(fatherClassName)
+        
+        if (type(subclassName) == NoneType):
+            continue 
+        
+        if (subclassName not in allClassesList):
+            AddClassToOntology(subclassName, ontology_file)
+            allClassesList.append(subclassName)
+
+        
+
+    # Create connection between father class and its subclasses
+    for i in range(2, subclassList.max_row + 1):
+        
+        fatherClassName  = subclassList.cell(row = i, column = father_column).value
+        subclassName = subclassList.cell(row = i, column = subclass_column).value
+        
+        if (type(subclassName) == NoneType):
+            continue
+            
+        AddSubclasses(fatherClassName, subclassName, ontology_file)
+
+# Takes a relation name and adds it the ontology
+def AddIndvObjPropToOntology(relationName, domainIndv, rangeIndv, fileName, objectPropertyType):
+    
+    # Declaration of the object property
+    fileName.write("    <Declaration>\n")
+    middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relationName) + '"/>'
+    fileName.write(middleTxt)
+    fileName.write("\n    </Declaration>")
+    
+    # Determine the type of the object property
+    if objectPropertyType != None:
+        objPropStr = ObjectPropertyTypeString(objectPropertyType)
+
+        startText = "\n    <" + objPropStr + ">\n"
+        fileName.write(startText)
+        
+        middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relationName) + '"/>'
+        fileName.write(middleTxt)
+        
+        endingText = "\n    </" + objPropStr + ">"
+        fileName.write(endingText)
+    
+    # Determine domain and range of the object properties
+    fileName.write("\n    <ObjectPropertyAssertion>\n")
+    
+    middleTxt = '        <ObjectProperty IRI="#' + ModifyEntityNameForOnto(relationName) + '"/>'
+    fileName.write(middleTxt)
+    
+    middleTxt2 = '\n        <NamedIndividual IRI="#' + ModifyEntityNameForOnto(domainIndv) + '"/>'
+    fileName.write(middleTxt2)
+    
+    middleTxt3 = '\n        <NamedIndividual IRI="#' + ModifyEntityNameForOnto(rangeIndv) + '"/>'
+    fileName.write(middleTxt3)
+    
+    fileName.write("\n    </ObjectPropertyAssertion>\n") 
+    
+
 # Take ontology name and annotation from user
 ontologyName = input("Enter the name of your ontology: \n") # There shouldn't be any spaces in the ontology name
 annotation = input("Enter a brief annotation for your ontology: \n")
-
 
 # Create a txt file for the ontology to write initializing owl tags to it
 newOntology = open("txt files\\" + ontologyName + ".txt", 'w', encoding="utf8")
 
 # Initialize the Ontology
 InitializeOntology(newOntology, ontologyName, annotation)
-newOntology.close()
 
-# Open the txt file again to append class names
-newOntology = open("txt files\\" + ontologyName + ".txt", 'a', encoding="utf8")
-
-allClassesList = []
-
-'''
-# Load class names excel with its path
-ontologyClasses = openpyxl.load_workbook("SmallQuranWords - Test.xlsx")
-classNamesList = ontologyClasses.active
+all_classes_list = []
+all_indvs_list = []
 
 
+# TO DELETE BEGINNING
+path = "xlsx files\\HierarchyOntology\\Phase2\\" 
+excel_file_name = "FatherChildList"
 
-# Iterate through excel file of classes and add classes to ontology
-for i in range(2, classNamesList.max_row+1):
-    className = classNamesList.cell(row=i, column=1).value
-    allClassesList.append(className)
-    AddClassToOntology(className, newOntology)
-'''
+excel_file = openpyxl.load_workbook(path + excel_file_name + ".xlsx")
+records_list = excel_file.active
 
-
-
-# Load classes and subclasses excel
-hirarchyOntoExcelName = "Classes"
-ontologySubclasses = openpyxl.load_workbook("xlsx files\\IndividualOntology\\" + hirarchyOntoExcelName + ".xlsx")
-subclassList = ontologySubclasses.active 
-
-
-# Iterate file of subclasses and declare each subclasses as a class in the ontology
-for i in range(2, subclassList.max_row+1):
+for i in range(2, records_list.max_row + 1):
     
-    fatherClassName  = subclassList.cell(row=i, column=2).value
-    subclassName = subclassList.cell(row=i, column=1).value
-
-    if (fatherClassName not in allClassesList):
-        AddClassToOntology(fatherClassName , newOntology)
-        allClassesList.append(fatherClassName)
+    root_class = records_list.cell(row = i, column = 4).value
+    indv1 = records_list.cell(row = i, column = 3).value
+    indv2 = records_list.cell(row = i, column = 2).value
     
-    if (type(subclassName) == NoneType):
-        continue 
-     
-    if (subclassName not in allClassesList):
-        AddClassToOntology(subclassName, newOntology)
-        allClassesList.append(subclassName)
-
+    if root_class not in all_classes_list:
+        all_classes_list.append(root_class)
+        AddClassToOntology(root_class, newOntology)
+    
+    if indv1 not in all_indvs_list:
+        all_indvs_list.append(indv1)
+        AddIndividualsToOntology(root_class, indv1, newOntology)
         
+    if indv2 not in all_indvs_list and root_class != indv2:
+        all_indvs_list.append(indv2)
+        AddIndividualsToOntology(root_class, indv2, newOntology)    
+        
+        AddIndvObjPropToOntology("هست يك", indv1, indv2, newOntology, "transitive")
 
-# Create connection between father class and its subclasses
-for i in range(2, subclassList.max_row+1):
-    
-    fatherClassName  = subclassList.cell(row=i, column=2).value
-    subclassName = subclassList.cell(row=i, column=1).value
-    
-    if (type(subclassName) == NoneType):
-        continue
-        
-    AddSubclasses(fatherClassName, subclassName, newOntology)
-       
-'''
-ontologySubclasses2 = openpyxl.load_workbook("HierarchyOfQuranConcepts.xlsx")
-subclassList2 = ontologySubclasses2.active
-       
-for i in range(2, subclassList2.max_row+1):
-    
-    #second file of classes
-    fatherClassName2  = subclassList2.cell(row=i, column=1).value
-    subclassName2 = subclassList2.cell(row=i, column=2).value
-    
-    if (fatherClassName2 not in allClassesList):
-        AddClassToOntology(fatherClassName2 , newOntology)
-        allClassesList.append(fatherClassName2)
-    
-    if (type(subclassName2) == NoneType):
-        continue 
-     
-    if (subclassName2 not in allClassesList):
-        AddClassToOntology(subclassName2, newOntology)
-        allClassesList.append(subclassName2)
-        
+path2 = "xlsx files\\IndividualOntology\\Phase2\\"
+rel_file_name = "Relations_final" 
 
-# Create connection between father class and its subclasses for the second list
-for i in range(2, subclassList2.max_row+1):
+rels_excel_file = openpyxl.load_workbook(path2 + rel_file_name + ".xlsx")
+rels_list = rels_excel_file.active
+
+for i in range(2 , rels_list.max_row + 1):
+    domain_indv = rels_list.cell(i, 1).value
+    range_indv = rels_list.cell(i, 2).value
+    obj_prop_type = rels_list.cell(i, 3).value
+    obj_prop_name = rels_list.cell(i, 4).value
     
-    fatherClassName2  = subclassList2.cell(row=i, column=1).value
-    subclassName2 = subclassList2.cell(row=i, column=2).value
-    
-    if (type(subclassName2) == NoneType):
-            continue
+    if domain_indv not in all_indvs_list:
+        all_indvs_list.append(domain_indv)
         
-    AddSubclasses(fatherClassName2, subclassName2, newOntology)
-'''
+    if range_indv not in all_indvs_list:
+        all_indvs_list.append(range_indv)
+    
+    AddIndvObjPropToOntology(obj_prop_name, domain_indv, range_indv, newOntology, obj_prop_type)    
+# TO DELETE END
 
 
 '''
@@ -298,7 +336,7 @@ for i in range(2, objPropList.max_row+1):
 '''  
 
 
-
+'''
 # Load Individuals
 concept_indv_excel_name = "QuranConceptIndv"
 ontologyIndv = openpyxl.load_workbook("xlsx files\\IndividualOntology\\" + concept_indv_excel_name + ".xlsx")
@@ -313,23 +351,7 @@ for i in range(2, indvList.max_row+1):
         continue
     
     AddIndividualsToOntology(classNameForIndv, indvName, newOntology)
-
-
-# Load Individuals
-science_indv_excel_name = "QuranScienceIndv"
-ontologyIndv = openpyxl.load_workbook("xlsx files\\IndividualOntology\\" + science_indv_excel_name + ".xlsx")
-indvList = ontologyIndv.active
-
-# Iterate file of individuals and add them to the ontology
-for i in range(2, indvList.max_row+1):
-    classNameForIndv = indvList.cell(row=i, column=2).value
-    indvName = indvList.cell(row=i, column=1).value
-    
-    if(type(indvName) == NoneType):
-        continue
-    
-    AddIndividualsToOntology(classNameForIndv, indvName, newOntology)
-
+'''
 
 
 # Add final tags to the ontology file
