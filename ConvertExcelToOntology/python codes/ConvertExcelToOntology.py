@@ -2,9 +2,7 @@
 # Contributed by Soheil Hoseini - CE student at IUST - Iran, Tehran
 
 
-from tkinter.filedialog import Open
 from types import NoneType
-from sympy import N, Domain
 import openpyxl # Reading an excel file using Python
 import os # Used for converting the txt file to owl file
 
@@ -273,34 +271,39 @@ all_indvs_list = []
 
 
 # TO DELETE BEGINNING
-path = "xlsx files\\HierarchyOntology\\Phase2\\" 
+path = "xlsx files\\IndividualOntology\\Phase3\\" 
 excel_file_name = "FatherChildList"
 
 excel_file = openpyxl.load_workbook(path + excel_file_name + ".xlsx")
 records_list = excel_file.active
 
+all_entities = open("resources\\all_entities.txt", 'w', encoding="utf8")
+
 for i in range(2, records_list.max_row + 1):
     
-    root_class = records_list.cell(row = i, column = 4).value
-    indv1 = records_list.cell(row = i, column = 3).value
-    indv2 = records_list.cell(row = i, column = 2).value
+    root_class = records_list.cell(row = i, column = 3).value
+    indv1 = records_list.cell(row = i, column = 2).value
+    indv2 = records_list.cell(row = i, column = 1).value
     
     if root_class not in all_classes_list:
         all_classes_list.append(root_class)
+        all_entities.write(root_class+"\n")
         AddClassToOntology(root_class, newOntology)
     
     if indv1 not in all_indvs_list:
         all_indvs_list.append(indv1)
+        all_entities.write(indv1+"\n")
         AddIndividualsToOntology(root_class, indv1, newOntology)
         
     if indv2 not in all_indvs_list and root_class != indv2:
         all_indvs_list.append(indv2)
+        all_entities.write(indv2+"\n")
         AddIndividualsToOntology(root_class, indv2, newOntology)    
         
         AddIndvObjPropToOntology("هست يك", indv1, indv2, newOntology, "transitive")
 
-path2 = "xlsx files\\IndividualOntology\\Phase2\\"
-rel_file_name = "Relations_final" 
+path2 = "xlsx files\\IndividualOntology\\Phase3\\"
+rel_file_name = "RefinedRelations2" 
 
 rels_excel_file = openpyxl.load_workbook(path2 + rel_file_name + ".xlsx")
 rels_list = rels_excel_file.active
@@ -352,6 +355,7 @@ for i in range(2, indvList.max_row+1):
     
     AddIndividualsToOntology(classNameForIndv, indvName, newOntology)
 '''
+all_entities.close()
 
 
 # Add final tags to the ontology file
