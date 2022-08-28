@@ -10,11 +10,15 @@ class RefineOntologyData:
     
     def __init__(self) -> None:
         self.modified_y_cnt = 0
+        self.modified_half_space_cnt = 0
+        self.modified_half_space_indices = list()
     
-    def modify_enitiy_name(self, name):
+    def modify_enitiy_name(self, name, entity_row_indx):
         # در فایل پدر و فرزندی، "ی" فارسی هست و کیبورد رو میخونه برعکس فایل روابط
         names_list = list(name.split())
-
+        file = open("resources\\SpecialCharacters.txt", 'r', encoding="utf8")
+        half_space = file.read()
+        file.close()
         for j in range(len(names_list)):
             
             word = names_list[j]
@@ -26,6 +30,11 @@ class RefineOntologyData:
                     ans += "ی"
                     self.modified_y_cnt += 1
                 
+                elif word[k] == half_space:
+                    ans += ""
+                    self.modified_half_space_cnt += 1
+                    self.modified_half_space_indices.append(entity_row_indx)
+                    
                 else:
                     ans += word[k]
                 
@@ -47,8 +56,8 @@ records_list = excel_file.active
 
 empty_rows = list()
 
-# Create a new xlsx file combined of the last two 
-dest_xlsx_file = "RefinedRelations"
+
+dest_xlsx_file = "RefinedRelationsVol3"
 workbook = xlsxwriter.Workbook(path + dest_xlsx_file + ".xlsx")
 worksheet = workbook.add_worksheet() 
 
@@ -70,17 +79,17 @@ for i in range(2, records_list.max_row + 1):
         empty_rows.append(i)
         continue
     
-    modified_cell1 = refine_engine.modify_enitiy_name(cell1)
+    modified_cell1 = refine_engine.modify_enitiy_name(cell1, i)
     worksheet.write(row, 0, modified_cell1)
     
-    modified_cell2 = refine_engine.modify_enitiy_name(cell2)
+    modified_cell2 = refine_engine.modify_enitiy_name(cell2, i)
     worksheet.write(row, 1, modified_cell2)
     
     cell3 = records_list.cell(i, 3).value
-    # modified_cell3 = refine_engine.modify_enitiy_name(cell3)
+    # modified_cell3 = refine_engine.modify_enitiy_name(cell3, i)
     worksheet.write(row, 2, cell3)
     
-    modified_cell4 = refine_engine.modify_enitiy_name(cell4)
+    modified_cell4 = refine_engine.modify_enitiy_name(cell4, i)
     worksheet.write(row, 3, modified_cell4)
     
     row += 1
@@ -91,3 +100,4 @@ print(empty_rows)
 
 print("Congrats my friend! Your data has been successfully refined. ")
 print(f"\nStats:\n      Modified ی counts: {refine_engine.modified_y_cnt}\n")
+print(f"      Modified half spaces counts: {refine_engine.modified_half_space_cnt} => {refine_engine.modified_half_space_indices}\n")

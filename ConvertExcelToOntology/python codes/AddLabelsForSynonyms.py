@@ -54,7 +54,7 @@ class Synonyms:
     def AppendAnnotationLabels(self, entity_name: string, synonym: string, final_onto: TextIOWrapper):
         final_onto.write("\n    <AnnotationAssertion>")
         final_onto.write("\n        <AnnotationProperty abbreviatedIRI=\"rdfs:label\"/>")
-        final_onto.write(f"\n        <IRI>#{entity_name}</IRI>")
+        final_onto.write(f"\n        <IRI>#{self.ModifyEntityNameForOnto(entity_name)}</IRI>")
         final_onto.write(f"\n        <Literal>{synonym}</Literal>")
         final_onto.write("\n    </AnnotationAssertion>")
 
@@ -69,29 +69,37 @@ class Synonyms:
         
         finalOntology = open(final_onto_path + final_onto_name + ".txt", "w", encoding="utf8")
         not_availavle_entities = list()
-
+        current_entities = list()
+        
+        ontology_synonyms = openpyxl.load_workbook(syn_excel_path + syns_excel_name + ".xlsx")
+        synonyms_list = ontology_synonyms.active
+        
         for line in self.onto_file:
-            
-            if line != "</Ontology>\n":
-                finalOntology.write(line)
-                
-            else:
-                ontology_synonyms = openpyxl.load_workbook(syn_excel_path + syns_excel_name + ".xlsx")
-                synonyms_list = ontology_synonyms.active
+                              
+            if line == "</Ontology>\n" or line == "</Ontology>":
 
                 # Iterate through excel file of the synonyms
                 for i in range(2, synonyms_list.max_row + 1):
                     
                     entity_name = synonyms_list.cell(i, 1).value
                     synonym = synonyms_list.cell(i, 2).value
+
+                    current_entities.append(entity_name)
+                    
                     if entity_name not in all_entities:
                         not_availavle_entities.append(entity_name)
                         continue
                     self.AppendAnnotationLabels(entity_name, synonym, finalOntology)
                     
+            else:
+                finalOntology.write(line)
+                
         self.FinalizeOntologyTags(finalOntology)
         #self.ConvertTxtToOwl(final_onto_name)
-        print(f"{len(not_availavle_entities)} number of entities were not found!\n", all_entities)
+        
+        print(f"All stored entities: {len(all_entities)}")
+        print(f"We checked {len(current_entities)} names.\n", current_entities,"\n\n\n\n")
+        print(f"{len(not_availavle_entities)} number of entities were not found!\n", not_availavle_entities)
 
     # Adds final tags for creating the ontology
     def FinalizeOntologyTags(self, file: TextIOWrapper):
@@ -122,10 +130,10 @@ for line in all_entities_file:
         all_entities.append(entity)
 
 syn_path = "xlsx files\\IndividualOntology\\Phase3\\"
-onto_syn_excel_name = "RefinedQuranConceptsSynonyms"
+onto_syn_excel_name = "RefinedQuranScienceSynonyms"
 
-final_ontology_name = "IndvOntoLabel"
 final_ontology_path = "txt files\\"
+final_ontology_name = "IndvOntoLabel"
 
 # Start the adding synonyms process
 synonyms_engine = Synonyms(orig_ontology_file)
