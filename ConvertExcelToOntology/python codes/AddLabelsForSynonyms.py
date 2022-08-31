@@ -86,7 +86,7 @@ class Synonyms:
 
                     current_entities.append(entity_name)
                     
-                    if entity_name not in all_entities:
+                    if (entity_name not in all_entities) and (entity_name not in not_availavle_entities):
                         not_availavle_entities.append(entity_name)
                         continue
                     self.AppendAnnotationLabels(entity_name, synonym, finalOntology)
@@ -119,7 +119,7 @@ class Synonyms:
 
 
 path = "txt files\\"
-orig_ontology_name = "IndvOnto3"
+orig_ontology_name = "IndvOntoLabel4"
 orig_ontology_file = open(path + orig_ontology_name + ".txt", "r", encoding="utf8")
 
 all_entities_file = open("resources\\all_entities.txt", 'r', encoding="utf8")
@@ -129,11 +129,11 @@ for line in all_entities_file:
     if entity != "\n" and entity != "" and entity != None and entity != NoneType and entity != NULL:
         all_entities.append(entity)
 
-syn_path = "xlsx files\\IndividualOntology\\Phase3\\"
-onto_syn_excel_name = "RefinedQuranScienceSynonyms"
+syn_path = "xlsx files\\IndividualOntology\\Phase3\\Vol4\\"
+onto_syn_excel_name = "QuranConceptsSynonymsVol4"
 
 final_ontology_path = "txt files\\"
-final_ontology_name = "IndvOntoLabel"
+final_ontology_name = "IndvOntoFinal4"
 
 # Start the adding synonyms process
 synonyms_engine = Synonyms(orig_ontology_file)

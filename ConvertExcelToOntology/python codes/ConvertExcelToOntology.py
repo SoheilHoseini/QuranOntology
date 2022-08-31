@@ -5,6 +5,7 @@
 from types import NoneType
 import openpyxl # Reading an excel file using Python
 import os # Used for converting the txt file to owl file
+from asyncio.windows_events import NULL
 
 # Converts the Persian class names to .owl format
 def ModifyEntityNameForOnto(className):
@@ -271,13 +272,13 @@ all_indvs_list = []
 
 
 # TO DELETE BEGINNING
-path = "xlsx files\\IndividualOntology\\Phase3\\" 
-excel_file_name = "FatherChildList"
+path = "xlsx files\\IndividualOntology\\Phase3\\Vol4\\" 
+excel_file_name = "FatherChildListVol4"
 
 excel_file = openpyxl.load_workbook(path + excel_file_name + ".xlsx")
 records_list = excel_file.active
 
-all_entities = open("resources\\all_entities.txt", 'w', encoding="utf8")
+all_entities_file = open("resources\\all_entities.txt", 'w', encoding="utf8")
 
 for i in range(2, records_list.max_row + 1):
     
@@ -285,28 +286,41 @@ for i in range(2, records_list.max_row + 1):
     indv1 = records_list.cell(row = i, column = 2).value
     indv2 = records_list.cell(row = i, column = 1).value
     
-    if root_class not in all_classes_list:
+    if root_class not in all_classes_list and type(root_class) != NoneType:
         all_classes_list.append(root_class)
-        all_entities.write(root_class+"\n")
+        all_entities_file.write(root_class+"\n")
         AddClassToOntology(root_class, newOntology)
     
-    if indv1 not in all_indvs_list:
+    
+    if indv1 not in all_indvs_list and type(indv1) != NoneType:
         all_indvs_list.append(indv1)
-        all_entities.write(indv1+"\n")
+        all_entities_file.write(indv1+"\n")
         AddIndividualsToOntology(root_class, indv1, newOntology)
         
-    if indv2 not in all_indvs_list and root_class != indv2:
+        
+    if indv2 not in all_indvs_list and root_class != indv2 and type(indv2) != NoneType:
         all_indvs_list.append(indv2)
-        all_entities.write(indv2+"\n")
+        all_entities_file.write(indv2+"\n")
         AddIndividualsToOntology(root_class, indv2, newOntology)    
         
         AddIndvObjPropToOntology("هست يك", indv1, indv2, newOntology, "transitive")
-
-path2 = "xlsx files\\IndividualOntology\\Phase3\\"
-rel_file_name = "RefinedRelations2" 
+        
+all_entities_file.close()
+# Save all entities in a list
+all_entities_file = open("resources\\all_entities.txt", 'r', encoding="utf8")
+all_entities = list()
+for line in all_entities_file:
+    entity = line[:len(line)-1]
+    if entity != "\n" and entity != "" and entity != None and entity != NoneType and entity != NULL:
+        all_entities.append(entity)
+        
+path2 = "xlsx files\\IndividualOntology\\Phase3\\Vol4\\"
+rel_file_name = "RelationsVol4" 
 
 rels_excel_file = openpyxl.load_workbook(path2 + rel_file_name + ".xlsx")
 rels_list = rels_excel_file.active
+
+not_available_indvs = list()
 
 for i in range(2 , rels_list.max_row + 1):
     domain_indv = rels_list.cell(i, 1).value
@@ -320,7 +334,15 @@ for i in range(2 , rels_list.max_row + 1):
     if range_indv not in all_indvs_list:
         all_indvs_list.append(range_indv)
     
-    AddIndvObjPropToOntology(obj_prop_name, domain_indv, range_indv, newOntology, obj_prop_type)    
+    if (domain_indv in all_entities) and (range_indv in all_entities):
+        AddIndvObjPropToOntology(obj_prop_name, domain_indv, range_indv, newOntology, obj_prop_type)  
+    
+    elif domain_indv not in all_entities and domain_indv not in not_available_indvs:
+        not_available_indvs.append(domain_indv)
+    
+    elif range_indv not in all_entities and range_indv not in not_available_indvs:
+        not_available_indvs.append(range_indv)
+        
 # TO DELETE END
 
 
@@ -355,9 +377,9 @@ for i in range(2, indvList.max_row+1):
     
     AddIndividualsToOntology(classNameForIndv, indvName, newOntology)
 '''
-all_entities.close()
+all_entities_file.close()
 
-
+print(f"{len(not_available_indvs)} number of individuls were not found!\n{not_available_indvs}")
 # Add final tags to the ontology file
 FinalizeOntology(newOntology)
 newOntology.close()
