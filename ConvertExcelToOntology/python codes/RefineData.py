@@ -9,12 +9,20 @@ import xlsxwriter # Create and fill xlsx file
 class RefineOntologyData:
     
     def __init__(self) -> None:
+        
         self.modified_y_cnt = 0
+        
         self.modified_half_space_cnt = 0
         self.modified_half_space_indices = list()
         
+        self.modified_v_cnt = 0
+        self.modified_v_indices = list()
+        
         self.modified_h_cnt = 0
         self.modified_h_indices = list()
+        
+        self.modified_a_cnt  = 0
+        self.modified_a_indices = list()
     
     def modify_enitiy_name(self, name, entity_row_indx):
         # در فایل پدر و فرزندی، "ی" فارسی هست و کیبورد رو میخونه برعکس فایل روابط
@@ -39,12 +47,33 @@ class RefineOntologyData:
                     self.modified_half_space_cnt += 1
                     self.modified_half_space_indices.append(entity_row_indx)
                 
-                # Convet Arabic format to Persian
-                elif word[k] == "ة":
+                
+                # Convet Arabic format to Persian (Only for appearing at the end of words that are in the middle of phrases)
+                # the word should not be at the end of the phrase
+                elif word[k] == "ة" and not (j != (len(names_list) - 1) and k == (len(word) - 1)):
                     ans += "ه"
                     self.modified_h_cnt += 1
                     self.modified_h_indices.append(entity_row_indx)
-                    
+                
+                
+                elif word[k] == "أ" and ((k == len(word) - 1) or k == 0):
+                    ans += "ا"
+                    self.modified_a_cnt += 1
+                    self.modified_a_indices.append(entity_row_indx)
+                
+                
+                elif word[k] == "ؤ" and ((k == len(word) - 1) or k == 0):
+                    ans += "و"
+                    self.modified_v_cnt += 1
+                    self.modified_v_indices.append(entity_row_indx)
+                
+                
+                elif word[k] == "ۀ":
+                    ans += "ه"
+                    self.modified_h_cnt += 1
+                    self.modified_h_indices.append(entity_row_indx)
+                
+                
                 else:
                     ans += word[k]
                 
@@ -76,7 +105,6 @@ worksheet.write(0, 1, records_list.cell(1,2).value)
 worksheet.write(0, 2, records_list.cell(1,3).value)
 
 for i in range(2, records_list.max_row + 1):
-    
     
     cell1 = records_list.cell(i, 1).value
     cell2 = records_list.cell(i, 2).value
