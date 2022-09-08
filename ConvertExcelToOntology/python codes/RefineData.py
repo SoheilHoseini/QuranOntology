@@ -26,7 +26,12 @@ class RefineOntologyData:
     
     def modify_enitiy_name(self, name, entity_row_indx):
         # در فایل پدر و فرزندی، "ی" فارسی هست و کیبورد رو میخونه برعکس فایل روابط
+        if name == NoneType:
+            print("None", name)
+            
         names_list = list(name.split())
+        
+            
         file = open("resources\\SpecialCharacters.txt", 'r', encoding="utf8")
         half_space = file.read()
         file.close()
@@ -43,7 +48,12 @@ class RefineOntologyData:
                 
                 # Remove half spaces from words
                 elif word[k] == half_space:
-                    #ans += ""
+                    if word[k-1] != "_":
+                        ans += " "
+                    
+                    if k + 1 <= len(word) - 1 and word[k+1] != "_":
+                        ans += " "
+                        
                     self.modified_half_space_cnt += 1
                     self.modified_half_space_indices.append(entity_row_indx)
                 
@@ -84,8 +94,8 @@ class RefineOntologyData:
 
 refine_engine = RefineOntologyData()
         
-path = "xlsx files\\IndividualOntology\\Phase3\\" 
-excel_file_name = "RefinedRelations2"
+path = "xlsx files\\IndividualOntology\\Phase2\\" 
+excel_file_name = "ScienceIndvs"
 
 excel_file = openpyxl.load_workbook(path + excel_file_name + ".xlsx")
 records_list = excel_file.active
@@ -93,8 +103,9 @@ records_list = excel_file.active
 empty_rows = list()
 
 
-dest_xlsx_file = "RelationsVol4"
-workbook = xlsxwriter.Workbook(path + "Vol4\\" + dest_xlsx_file + ".xlsx")
+dest_xlsx_file = "ScienceIndvsPh4"
+destin_path = "xlsx files\\IndividualOntology\\Phase4\\"
+workbook = xlsxwriter.Workbook(destin_path + dest_xlsx_file + ".xlsx")
 worksheet = workbook.add_worksheet() 
 
 
@@ -108,8 +119,8 @@ for i in range(2, records_list.max_row + 1):
     
     cell1 = records_list.cell(i, 1).value
     cell2 = records_list.cell(i, 2).value
-    cell3 = records_list.cell(i, 3).value
-    cell4 = records_list.cell(i, 4).value
+    #cell3 = records_list.cell(i, 3).value
+    #cell4 = records_list.cell(i, 4).value
     
     if(type(cell1) == NoneType or type(cell2) == NoneType):
         empty_rows.append(i)
@@ -122,10 +133,10 @@ for i in range(2, records_list.max_row + 1):
     worksheet.write(row, 1, modified_cell2)
     
     #modified_cell3 = refine_engine.modify_enitiy_name(cell3, i)
-    worksheet.write(row, 2, cell3)
+    #worksheet.write(row, 2, cell3)
     
-    modified_cell4 = refine_engine.modify_enitiy_name(cell4, i)
-    worksheet.write(row, 3, modified_cell4)
+    #modified_cell4 = refine_engine.modify_enitiy_name(cell4, i)
+    #worksheet.write(row, 3, modified_cell4)
     
     row += 1
 
@@ -137,3 +148,5 @@ print("Congrats my friend! Your data has been successfully refined. ")
 print(f"\nStats:\n      Modified ی counts: {refine_engine.modified_y_cnt}\n")
 print(f"      Modified half spaces counts: {refine_engine.modified_half_space_cnt} => {refine_engine.modified_half_space_indices}\n")
 print(f"      Modified ه counts: {refine_engine.modified_h_cnt} => {refine_engine.modified_h_indices}\n")
+print(f"      Modified و counts: {refine_engine.modified_v_cnt} => {refine_engine.modified_v_indices}\n")
+print(f"      Modified ا counts: {refine_engine.modified_a_cnt} => {refine_engine.modified_a_indices}\n")

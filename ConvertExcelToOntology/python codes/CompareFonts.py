@@ -2,15 +2,15 @@
 from operator import le
 
 
-first_name = ""
-second_name = ""
+first_name = "صفات_الهی"
+second_name = "صفات_الهی"
 
 print(f"len first: {len(first_name)} , len second: {len(second_name)}")
 
 # file = open("resources\\SpecialCharacters.txt", 'w', encoding="utf8")
 # file.write(half_space)
 # file.close()
-
+differncing_chars = list()
 if len(first_name) < len(second_name):
     word_length = len(first_name)
 else:
@@ -20,8 +20,8 @@ for i in range(word_length):
     print(i + 1, "first:", first_name[i], "second:", second_name[i])
     if first_name[i] != second_name[i]:
         #print(i + 1, "first:", first_name[i], "second:", second_name[i])
-        print(f"Not equality at {i}")
-        pass
+        print(f"Not equality at {i+1}")
+        
     
 # file = open("resources\\SpecialCharacters.txt", 'r', encoding="utf8")
 # half_space = file.read()

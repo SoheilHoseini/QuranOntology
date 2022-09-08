@@ -55,7 +55,7 @@ class Synonyms:
         final_onto.write("\n    <AnnotationAssertion>")
         final_onto.write("\n        <AnnotationProperty abbreviatedIRI=\"rdfs:label\"/>")
         final_onto.write(f"\n        <IRI>#{self.ModifyEntityNameForOnto(entity_name)}</IRI>")
-        final_onto.write(f"\n        <Literal>{synonym}</Literal>")
+        final_onto.write(f"\n        <Literal>{self.ModifyEntityNameForOnto(synonym)}</Literal>")
         final_onto.write("\n    </AnnotationAssertion>")
 
 
