@@ -271,9 +271,11 @@ all_classes_list = []
 all_indvs_list = []
 
 
-# TO DELETE BEGINNING
-path = "xlsx files\\IndividualOntology\\Phase3\\Vol4\\" 
-excel_file_name = "FatherChildListVol4"
+## TO DELETE BEGINNING
+
+
+path = "xlsx files\\IndividualOntology\\Phase6\\" 
+excel_file_name = "FatherChildListPh6"
 
 excel_file = openpyxl.load_workbook(path + excel_file_name + ".xlsx")
 records_list = excel_file.active
@@ -305,7 +307,56 @@ for i in range(2, records_list.max_row + 1):
         
         AddIndvObjPropToOntology("هست يك", indv1, indv2, newOntology, "transitive")
         
+
+
+# Add Concept Individuals 
+path3 = "xlsx files\\IndividualOntology\\Phase6\\"
+concept_indvs_file_name = "ConceptIndvsPh6"
+con_indvs_excel_file = openpyxl.load_workbook(path3 + concept_indvs_file_name + ".xlsx")
+con_indv_list = con_indvs_excel_file.active
+
+for i in range(2, con_indv_list.max_row + 1):
+    parent_class = con_indv_list.cell(i, 2).value
+    child_indv = con_indv_list.cell(i, 1).value
+    
+    if parent_class not in all_classes_list and type(parent_class) != NoneType:
+        all_classes_list.append(parent_class)
+        all_entities_file.write(parent_class + "\n")
+        AddClassToOntology(parent_class, newOntology)
+        
+    if child_indv not in all_indvs_list and type(child_indv) != NoneType:
+        all_indvs_list.append(child_indv)
+        all_entities_file.write(child_indv + "\n")
+        AddIndividualsToOntology(parent_class, child_indv, newOntology)
+
+
+# Add Science Individuals
+path4 = "xlsx files\\IndividualOntology\\Phase6\\"
+science_indvs_file_name = "ScienceIndvsPh6"
+sci_indvs_excel_file = openpyxl.load_workbook(path4 + science_indvs_file_name + ".xlsx")
+sci_indv_list = sci_indvs_excel_file.active
+
+for i in range(2, sci_indv_list.max_row + 1):
+    parent_class2 = sci_indv_list.cell(i, 2).value
+    child_indv2 = sci_indv_list.cell(i, 1).value
+
+    if parent_class2 not in all_classes_list and type(parent_class2) != NoneType:
+        all_classes_list.append(parent_class2)
+        all_entities_file.write(parent_class2 + "\n")
+        AddClassToOntology(parent_class2, newOntology)
+    
+    
+    if child_indv2 not in all_indvs_list and type(child_indv2) != NoneType:
+        all_indvs_list.append(child_indv2)
+        all_entities_file.write(child_indv2 + "\n")
+        AddIndividualsToOntology(parent_class2, child_indv2, newOntology)
+
+
+
+
 all_entities_file.close()
+
+
 # Save all entities in a list
 all_entities_file = open("resources\\all_entities.txt", 'r', encoding="utf8")
 all_entities = list()
@@ -313,9 +364,11 @@ for line in all_entities_file:
     entity = line[:len(line)-1]
     if entity != "\n" and entity != "" and entity != None and entity != NoneType and entity != NULL:
         all_entities.append(entity)
-        
-path2 = "xlsx files\\IndividualOntology\\Phase3\\Vol4\\"
-rel_file_name = "RelationsVol4" 
+
+
+# Add Relations    
+path2 = "xlsx files\\IndividualOntology\\Phase6\\"
+rel_file_name = "RelationsPh6" 
 
 rels_excel_file = openpyxl.load_workbook(path2 + rel_file_name + ".xlsx")
 rels_list = rels_excel_file.active
@@ -343,7 +396,7 @@ for i in range(2 , rels_list.max_row + 1):
     elif range_indv not in all_entities and range_indv not in not_available_indvs:
         not_available_indvs.append(range_indv)
         
-# TO DELETE END
+## TO DELETE END
 
 
 '''

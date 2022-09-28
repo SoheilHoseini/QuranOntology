@@ -94,8 +94,8 @@ class RefineOntologyData:
 
 refine_engine = RefineOntologyData()
         
-path = "xlsx files\\IndividualOntology\\Phase2\\" 
-excel_file_name = "ScienceIndvs"
+path = "xlsx files\\IndividualOntology\\Phase5\\" 
+excel_file_name = "RelationsPh4-Refined"
 
 excel_file = openpyxl.load_workbook(path + excel_file_name + ".xlsx")
 records_list = excel_file.active
@@ -103,8 +103,8 @@ records_list = excel_file.active
 empty_rows = list()
 
 
-dest_xlsx_file = "ScienceIndvsPh4"
-destin_path = "xlsx files\\IndividualOntology\\Phase4\\"
+dest_xlsx_file = "RelationsPh6"
+destin_path = "xlsx files\\IndividualOntology\\Phase6\\"
 workbook = xlsxwriter.Workbook(destin_path + dest_xlsx_file + ".xlsx")
 worksheet = workbook.add_worksheet() 
 
@@ -119,8 +119,8 @@ for i in range(2, records_list.max_row + 1):
     
     cell1 = records_list.cell(i, 1).value
     cell2 = records_list.cell(i, 2).value
-    #cell3 = records_list.cell(i, 3).value
-    #cell4 = records_list.cell(i, 4).value
+    cell3 = records_list.cell(i, 3).value
+    cell4 = records_list.cell(i, 4).value
     
     if(type(cell1) == NoneType or type(cell2) == NoneType):
         empty_rows.append(i)
@@ -133,10 +133,10 @@ for i in range(2, records_list.max_row + 1):
     worksheet.write(row, 1, modified_cell2)
     
     #modified_cell3 = refine_engine.modify_enitiy_name(cell3, i)
-    #worksheet.write(row, 2, cell3)
+    worksheet.write(row, 2, cell3)
     
-    #modified_cell4 = refine_engine.modify_enitiy_name(cell4, i)
-    #worksheet.write(row, 3, modified_cell4)
+    modified_cell4 = refine_engine.modify_enitiy_name(cell4, i)
+    worksheet.write(row, 3, modified_cell4)
     
     row += 1
 

@@ -13,7 +13,7 @@ class Synonyms:
     
     def __init__(self, file: TextIOWrapper) -> None:
         self.onto_file = file
-        
+        self.entitiesAsSynonymsOfThemselves = list()        
         
     # Con
     # verts the Persian class names to .owl format
@@ -89,6 +89,12 @@ class Synonyms:
                     if (entity_name not in all_entities) and (entity_name not in not_availavle_entities):
                         not_availavle_entities.append(entity_name)
                         continue
+                    
+                    # add the name of the entity as a synonym for itself
+                    if entity_name not in self.entitiesAsSynonymsOfThemselves:
+                        self.AppendAnnotationLabels(entity_name, entity_name, finalOntology)
+                        self.entitiesAsSynonymsOfThemselves.append(entity_name)
+                        
                     self.AppendAnnotationLabels(entity_name, synonym, finalOntology)
                     
             else:
@@ -119,7 +125,7 @@ class Synonyms:
 
 
 path = "txt files\\"
-orig_ontology_name = "IndvOntoLabel4"
+orig_ontology_name = "IndvOntoFinal6"
 orig_ontology_file = open(path + orig_ontology_name + ".txt", "r", encoding="utf8")
 
 all_entities_file = open("resources\\all_entities.txt", 'r', encoding="utf8")
@@ -129,11 +135,11 @@ for line in all_entities_file:
     if entity != "\n" and entity != "" and entity != None and entity != NoneType and entity != NULL:
         all_entities.append(entity)
 
-syn_path = "xlsx files\\IndividualOntology\\Phase3\\Vol4\\"
-onto_syn_excel_name = "QuranConceptsSynonymsVol4"
+syn_path = "xlsx files\\IndividualOntology\\Phase6\\"
+onto_syn_excel_name = "QuranScienceSynonymsPh6"
 
 final_ontology_path = "txt files\\"
-final_ontology_name = "IndvOntoFinal4"
+final_ontology_name = "IndvOntoCompleted6"
 
 # Start the adding synonyms process
 synonyms_engine = Synonyms(orig_ontology_file)
@@ -148,5 +154,4 @@ base = os.path.splitext(convertedFile)[0]
 base = "owl" + base[3:] # Save the ontology in the "owl files" folder
 os.rename(convertedFile, base + '.owl')
 
-print('Congratulations! You have successfully built your new ontology.')
-
+print('Congratulations! You have successfully added synonyms to your new ontology.')
