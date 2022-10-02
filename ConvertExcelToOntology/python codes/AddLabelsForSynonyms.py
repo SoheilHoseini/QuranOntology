@@ -15,8 +15,7 @@ class Synonyms:
         self.onto_file = file
         self.entitiesAsSynonymsOfThemselves = list()        
         
-    # Con
-    # verts the Persian class names to .owl format
+    # Converts the Persian class names to .owl format
     def ModifyEntityNameForOnto(self, className):
         nameList = list(className.split())
         
@@ -125,7 +124,7 @@ class Synonyms:
 
 
 path = "txt files\\"
-orig_ontology_name = "IndvOntoFinal6"
+orig_ontology_name = "HierarOntoFinal4"
 orig_ontology_file = open(path + orig_ontology_name + ".txt", "r", encoding="utf8")
 
 all_entities_file = open("resources\\all_entities.txt", 'r', encoding="utf8")
@@ -135,11 +134,11 @@ for line in all_entities_file:
     if entity != "\n" and entity != "" and entity != None and entity != NoneType and entity != NULL:
         all_entities.append(entity)
 
-syn_path = "xlsx files\\IndividualOntology\\Phase6\\"
-onto_syn_excel_name = "QuranScienceSynonymsPh6"
+syn_path = "xlsx files\\HierarchyOntology\\Phase4\\"
+onto_syn_excel_name = "QuranConceptsSynonymsPh6"
 
 final_ontology_path = "txt files\\"
-final_ontology_name = "IndvOntoCompleted6"
+final_ontology_name = "HierarOntoComplete4"
 
 # Start the adding synonyms process
 synonyms_engine = Synonyms(orig_ontology_file)
